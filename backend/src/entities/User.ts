@@ -1,8 +1,8 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Booking } from "./Booking";
 
 @Entity()
-export class User {
+export class User extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
@@ -12,10 +12,13 @@ export class User {
     @Column()
     email: string
 
+    @Column()
+    password: string
+
     @OneToMany(() => Booking, (booking) => booking.user)
     bookings: Booking[]
 
-    @Column()
+    @Column({ default: "user" })
     role: string
 
     @CreateDateColumn()

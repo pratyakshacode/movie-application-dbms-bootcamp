@@ -4,13 +4,14 @@ import dotenv from 'dotenv';
 import { connectDB } from './config/dbConnect';
 import exampleRouter from './routes/example';
 import movieRouter from './routes/movieRouter';
+import authRouter from './routes/authRouter';
 
 const app = express();
 
 dotenv.config();
 
 app.use(cors({
-    origin: "http://localhost:5173", // your frontend
+    origin: "http://localhost:5173",
     credentials: true
 }));
 
@@ -21,6 +22,7 @@ const PORT = process.env.PORT;
 connectDB();
 
 // routes
+app.use("/api/auth", authRouter);
 app.use('/api/example', exampleRouter);
 app.use('/api/movies', movieRouter);
 
