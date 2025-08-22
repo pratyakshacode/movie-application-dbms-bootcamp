@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 body {
   background-color: #0f172a;
 }
@@ -16,6 +17,7 @@ nav {
   /* background-color: rgba(93, 92, 92, 0.7); */
   backdrop-filter: blur(10px);
   z-index: 1000;
+  border-bottom: 1px solid rgb(84, 83, 83);
 }
 
 #navbar-spot1 {

@@ -7,7 +7,7 @@ const Movies = () => {
     const service = new Service();
 
     const getAllMovies = async () : Promise<any[]> => {
-        const response = await service.get('movies');
+        const response = await service.get('movies/all');
         return response;
     }
 
@@ -16,8 +16,6 @@ const Movies = () => {
         queryFn: getAllMovies,
         refetchOnWindowFocus: false,
     });
-
-    
 
   return (
 

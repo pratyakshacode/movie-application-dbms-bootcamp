@@ -13,9 +13,6 @@ export class Theatre extends BaseEntity {
     @Column()
     location: string
 
-    @Column()
-    capacity: number
-
     @OneToMany(() => Seat, (seat) => seat.theatre)
     seats: Seat[];
 

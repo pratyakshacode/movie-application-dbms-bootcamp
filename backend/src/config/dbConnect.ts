@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import dotenv from 'dotenv';
+import mongoose from "mongoose";
 
 dotenv.config();
 console.log("dirname", __dirname)
@@ -18,8 +19,8 @@ export const AppDataSource = new DataSource({
 
 export const connectDB = async () => {
     try {
-        await Promise.all([AppDataSource.initialize()])
+        await Promise.all([AppDataSource.initialize(), mongoose.connect(process.env.MONGODB_URL)])
     } catch (error) {
-        console.log("ERROR IN CONNECTING MYSQL", error);
+        console.error("ERROR IN CONNECTING DATABASES", error);
     }
 }
