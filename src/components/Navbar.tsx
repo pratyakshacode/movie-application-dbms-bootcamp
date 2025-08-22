@@ -10,8 +10,6 @@ const Navbar = () => {
       <div className="font-bold text-xl text-white">WowShow</div>
       <ul className="flex space-x-6">
         <li><Link to="/">Home</Link></li>
-        <li><Link to="/contactUs">Contact Us</Link></li>
-        <li><Link to="/about">About</Link></li>
         <li><Link to="/movies">Movies</Link></li>
         <li><Link to={'/admin'}>Admin</Link></li>
       </ul>
