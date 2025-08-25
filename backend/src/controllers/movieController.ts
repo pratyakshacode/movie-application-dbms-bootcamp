@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { Movie } from "../entities/Movies"
-import { FindManyOptions, FindOneOptions } from "typeorm";
+import { FindManyOptions, FindOneOptions, Like } from "typeorm";
 
 export const getAllMovies = async (req: Request, res: Response) => {
     try {
@@ -15,7 +15,7 @@ export const getAllMovies = async (req: Request, res: Response) => {
 
 export const getMoviesWithPagination = async (req: Request, res: Response) => {
   try {
-    let { page, limit }: any = req.query;
+    let { page, limit, name }: any = req.query;
 
     if (!page) page = "1";
     if (!limit) limit = "10";
@@ -29,6 +29,10 @@ export const getMoviesWithPagination = async (req: Request, res: Response) => {
       skip,
       take: limit,
     };
+
+    if(name) {
+        query.where = { title : Like(`%${name}%`)}
+    }
 
     // ✅ Await the query
     const [movies, total] = await Movie.findAndCount(query);

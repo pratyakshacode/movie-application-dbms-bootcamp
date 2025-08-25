@@ -30,6 +30,16 @@ nav {
   filter: blur(30px);
 }
 
+#home-spot {
+  position: absolute;
+  border-radius: 50%;
+  z-index: -1;
+  height: 100px;
+  width: 100px;
+  background: rgba(16, 199, 255, 0.743);
+  filter: blur(30px);
+}
+
 nav ul { 
   display: flex;
   list-style: none;

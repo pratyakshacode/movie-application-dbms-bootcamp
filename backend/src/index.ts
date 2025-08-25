@@ -6,6 +6,7 @@ import exampleRouter from './routes/example';
 import movieRouter from './routes/movieRouter';
 import authRouter from './routes/authRouter';
 import theatreRouter from './routes/theatreRouter';
+import showsRouter from './routes/showsRouter';
 
 const app = express();
 
@@ -26,7 +27,8 @@ connectDB();
 app.use("/api/auth", authRouter);
 app.use('/api/example', exampleRouter);
 app.use('/api/movies', movieRouter);
-app.use('/api/theatre', theatreRouter)
+app.use('/api/theatre', theatreRouter);
+app.use('/api/shows', showsRouter);
 
 app.listen(PORT, () => {
     console.log(`Server Listening on port : ${PORT}`);

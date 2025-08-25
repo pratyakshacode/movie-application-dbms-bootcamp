@@ -1,10 +1,10 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Movie } from "./Movies";
 import { Booking } from "./Booking";
 import { Theatre } from "./Theatre";
 
 @Entity()
-export class ShowTime {
+export class ShowTime extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string
 
