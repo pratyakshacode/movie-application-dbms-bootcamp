@@ -59,3 +59,23 @@ export const getAllTheatres = async (req: Request, res: Response) => {
         return res.status(500).json({ status: "INTERNAL_SERVER_ERROR", error: error.message });
     }
 }
+
+export const getAllSeatsOfTheatre = async (req: Request, res: Response) => {
+  try {
+
+    const { theatreId } = req.params;
+
+    const query: FindManyOptions<Seat> = {
+      where: {
+        theatre: { id: theatreId }
+      }
+    }
+
+    const allSeatsOfTheatre = await Seat.find(query);
+    return res.status(200).json({ status: "SUCCESS", message: "Theatre seats fetched!", data:  allSeatsOfTheatre });
+
+  } catch (error) {
+      console.error("Error in getAllSeatsOfTheatre", error);
+      return res.status(500).json({ status: "INTERNAL_SERVER_ERROR", error: error.message });
+  }
+}

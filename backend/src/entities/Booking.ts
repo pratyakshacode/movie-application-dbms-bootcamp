@@ -1,11 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, OneToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, OneToOne, BaseEntity } from "typeorm";
 import { User } from "./User";
 import { ShowTime } from "./ShowTime";
 import { BookingSeat } from "./BookingSeat";
 import { Payment } from "./Payment";
 
 @Entity()
-export class Booking {
+export class Booking extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 

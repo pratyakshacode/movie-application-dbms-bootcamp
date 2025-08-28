@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   OneToOne,
   JoinColumn,
+  BaseEntity,
 } from "typeorm";
 import { Booking } from "./Booking";
 
@@ -16,7 +17,7 @@ export enum PaymentStatus {
 }
 
 @Entity()
-export class Payment {
+export class Payment extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

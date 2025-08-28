@@ -18,9 +18,17 @@ export const AppDataSource = new DataSource({
 });
 
 export const connectDB = async () => {
-    try {
-        await Promise.all([AppDataSource.initialize(), mongoose.connect(process.env.MONGODB_URL)])
-    } catch (error) {
-        console.error("ERROR IN CONNECTING DATABASES", error);
-    }
-}
+  try {
+    await Promise.all([
+      AppDataSource.initialize().then(() => {
+        console.log("✅SQL (TypeORM) connected");
+      }),
+      mongoose.connect(process.env.MONGODB_URL as string).then(() => {
+        console.log("✅ MongoDB connected");
+      }),
+    ]);
+  } catch (error) {
+    console.error("❌ ERROR IN CONNECTING DATABASES:", error);
+    process.exit(1); // stop server if DB fails
+  }
+};

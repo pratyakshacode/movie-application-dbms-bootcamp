@@ -7,6 +7,8 @@ import movieRouter from './routes/movieRouter';
 import authRouter from './routes/authRouter';
 import theatreRouter from './routes/theatreRouter';
 import showsRouter from './routes/showsRouter';
+import paymentRouter from './routes/paymentRouter';
+import bookingRouter from './routes/bookingRouter';
 
 const app = express();
 
@@ -29,6 +31,8 @@ app.use('/api/example', exampleRouter);
 app.use('/api/movies', movieRouter);
 app.use('/api/theatre', theatreRouter);
 app.use('/api/shows', showsRouter);
+app.use('/api/bookings', bookingRouter)
+app.use('/api/payment', paymentRouter);
 
 app.listen(PORT, () => {
     console.log(`Server Listening on port : ${PORT}`);

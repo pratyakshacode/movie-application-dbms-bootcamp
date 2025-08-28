@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { addTheatre, getAllTheatres } from '../controllers/theatreController';
+import { addTheatre, getAllSeatsOfTheatre, getAllTheatres } from '../controllers/theatreController';
 
 const theatreRouter = Router();
 
 theatreRouter.get('/all', getAllTheatres);
+theatreRouter.get('/seats/:theatreId', getAllSeatsOfTheatre);
 theatreRouter.post('/add', addTheatre)
 
 

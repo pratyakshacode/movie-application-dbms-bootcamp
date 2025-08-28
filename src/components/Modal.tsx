@@ -25,7 +25,7 @@ const Modal = ( { isOpen, onClose, title, children }: ModalProps ) => {
     <>
       {isOpen && (
         <div
-          className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ${
+          className={`fixed inset-0 z-[1000] flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ${
             show ? "opacity-100" : "opacity-0"
           }`}
         >
@@ -44,15 +44,6 @@ const Modal = ( { isOpen, onClose, title, children }: ModalProps ) => {
             {title && <h2 className="text-xl font-semibold mb-4">{title}</h2>}
 
             <div>{children}</div>
-
-            <div className="mt-6 flex justify-end space-x-2">
-              <button
-                onClick={handleClose}
-                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-              >
-                Cancel
-              </button>
-            </div>
           </div>
         </div>
       )}

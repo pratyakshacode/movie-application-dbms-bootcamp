@@ -1,96 +1,160 @@
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react"
+import { useParams } from "react-router-dom";
+import Service from "../utils/http";
+import BookTicketButton from "../components/BookTicketButton";
 
 const BookTicket = () => {
-  const [theatreName, setTheatreName] = useState('');
-  const [leftMatrix, setLeftMatrix] = useState<any[]>([]);
-  const [rightMatrix, setRightMatrix] = useState<any[]>([]);
-  const [bottomMatrix, setBottomMatrix] = useState<any[]>([]);
 
-  let alphabets = ['A', 'B', 'C', 'D', 'E']
+  const { movieId } = useParams();
+  const service = new Service();
+  const [selectedShow, setSelectedShow] = useState('');
+  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+  const [theatreId, setTheatreId] = useState('');
+  const [defaultSeatMap, setDefaultSeatMap] = useState([])
+  const [amount, setAmount] = useState(0);
+  
+  const getMovieById = async () => {
+      return await service.get(`movies/${movieId}`);
+  }
+
+  const addOrRemoveSeat = (seatId: string) => {
+      if(selectedSeats.includes(seatId)) {
+          const filteredSeats = selectedSeats.filter((seat) => seat !== seatId);
+          setSelectedSeats(filteredSeats);
+      }
+      else {
+        setSelectedSeats([...selectedSeats, seatId]);
+      }
+  }
+
+  const getSeatsOfTheatre = async () => {
+    return await service.get(`theatre/seats/${theatreId}`);
+  }
+
+  const { data: seats } = useQuery({
+    queryFn: getSeatsOfTheatre,
+    queryKey: ['getSeatsOfTheatre', theatreId],
+    enabled: theatreId.length > 0
+  })
+
+  const { data: movie } = useQuery({
+      queryFn: getMovieById,
+      queryKey: ['getMovieById'],
+      refetchOnWindowFocus: false
+  });
+
+  const getShowsForMovie = async () => {
+    return await service.get(`shows/${movieId}`);
+  }
+
+  const { data: shows } = useQuery({
+    queryKey: ['showsForMovie'],
+    queryFn: getShowsForMovie
+  })
+
   useEffect(() => {
-    const arr: any[] = [];
-    for (let row = 0; row < 4; row++) {
-      for (let j = 0; j < 12; j++) {
-        arr.push({ row: alphabets[row], num: j + 1 });
-      }
-    }
-
-    setLeftMatrix(arr);
-    setRightMatrix(arr);
-
-    const newArr: any[] = [];
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 24; j++) {
-        newArr.push({ row: alphabets[i], num: j + 1 });
-      }
-    }
-    setBottomMatrix(newArr);
-  }, [])
+      setDefaultSeatMap(seats?.data ?? []);
+  }, [seats])
 
   return (
-    <div className="flex flex-col justify-center text-gray-400">
-      {/* Theatre Name */}
-      <div className="flex flex-col w-full items-center">
-        <label htmlFor="theatreName">
-          <h1 className="text-xl mt-3">Theatre Name</h1>
-        </label>
-        <input
-            type="text"
-            onChange={(e) => setTheatreName(e.target.value)}
-            value={theatreName}
-            style={{ height: 40, outline: 'none' }}
-            className="mt-2 w-3/6 p-2 rounded-xl bg-gray-600 text-white"
-            placeholder="Enter the theater name"
-        />
-        <button className="border border-white px-10 py-1 mt-4 rounded-xl hover:bg-gray-700">Add Theatre</button>
+    <div className="flex flex-col justify-center items-center text-gray-400">
+      <h1 className="text-center text-3xl my-2 text-white underline underline-offset-8 ">Book Tickets For <span className="text-teal-500">{movie?.data?.title}</span></h1>
+      <div className="w-full">
+        {selectedShow ? defaultSeatMap.length > 0 ? <SeatLayout seats={defaultSeatMap as Seat[]} addOrRemoveSeat={addOrRemoveSeat} selectedSeats={selectedSeats}/> : <h1 className="text-center text-red-400 my-4 text-xl">Oopss ... No seat available for this theatre. Please choose another</h1> : null}
       </div>
-
-      {/* Seat Layout */}
-      <div style={{ height: '72vh' }} className="w-full flex flex-col items-center mt-6">
-        <div className="h-3/5 flex justify-between w-full gap-9">
-          {/* LEFT MATRIX */}
-          <div id="left-matrix" className="w-6/12 p-2 grid grid-cols-12 gap-1 ml-5 m-3">
-            {leftMatrix.map((seat, index) => (
-              <div
-                key={index}
-                className="w-8 h-8 flex items-center justify-center text-xs border rounded cursor-pointer hover:bg-green-700"
-              >
-                {seat.row}{seat.num}
-              </div>
-            ))}
-          </div>
-
-          {/* RIGHT MATRIX */}
-          <div id="right-matrix" className="w-6/12 p-2 grid grid-cols-12 gap-1 m-3">
-            {rightMatrix.map((seat, index) => (
-              <div
-                key={index}
-                className="w-8 h-8 flex items-center justify-center text-xs border rounded cursor-pointer hover:bg-green-700"
-              >
-                {seat.row}{seat.num}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* BOTTOM MATRIX */}
-        <div className="h-2/5 w-full flex justify-center p-2">
-        <div className="grid grid-cols-[repeat(24,minmax(0,1fr))] gap-1">
-            {bottomMatrix.map((seat, index) => (
-            <div
-                key={index}
-                className="w-8 h-8 flex items-center justify-center text-xs border rounded cursor-pointer hover:bg-green-700"
-            >
-                {seat.row}{seat.num}
-            </div>
-            ))}
-        </div>
-        </div>
-
-
+      <h1 className="my-4 text-2xl">Available Shows</h1>
+      <div className="flex w-full justify-center flex-wrap mb-10">
+          {
+            shows?.data?.map((show: any) => {
+                return <div className={`border p-4 rounded-xl cursor-pointer mx-4 ${selectedShow === show.id ? "bg-gray-700" : ''}`} key={show.id} onClick={() => {
+                  setSelectedShow(show.id);
+                  setTheatreId(show.theatre.id);
+                  setAmount(show.price ?? 0);
+                }}>
+                    <p>Theatre: {show?.theatre?.name}</p>
+                    <p>From : {new Date(show.startTime).toLocaleTimeString()}</p>
+                    <p>To : {new Date(show.endTime).toLocaleTimeString()}</p>
+                </div>
+            })
+          }
+      </div>
+      <div>
+          <BookTicketButton showTimeId={selectedShow} amount={amount * selectedSeats.length} seatsIds={selectedSeats} />
       </div>
     </div>
   )
 }
+
+interface Seat {
+  id: string;
+  seatNumber: string;
+  seatType: "LeftView" | "RightView" | "MiddleView";
+}
+
+interface SeatLayoutProps {
+  seats: Seat[];
+  addOrRemoveSeat: (id: string) => void;
+  selectedSeats: string[]
+}
+
+const SeatLayout = ({ seats, addOrRemoveSeat, selectedSeats }: SeatLayoutProps) => {
+  // Split the seats into left, right, middle
+  const leftMatrix = seats.filter((s) => s.seatType === "LeftView");
+  const rightMatrix = seats.filter((s) => s.seatType === "RightView");
+  const bottomMatrix = seats.filter((s) => s.seatType === "MiddleView");
+
+  return (
+    <div className="w-full flex flex-col items-center mt-6" >
+      {/* SCREEN */}
+      <div className="w-4/5 h-4 my-3 bg-gray-300 text-black rounded-md flex items-center justify-center text-sm font-semibold mb-10">
+        SCREEN
+      </div>
+
+      <div className="h-3/5 flex justify-between w-full gap-8 px-10">
+        {/* LEFT MATRIX */}
+        <div className="grid grid-cols-6 gap-1">
+          {leftMatrix.map((seat) => (
+            <div
+              key={seat.seatNumber}
+              onClick={() => addOrRemoveSeat(seat.id)}
+              className={`m-2 p-2 flex items-center justify-center text-xs border rounded cursor-pointer ${(!selectedSeats.includes(seat.id)) ? "hover:bg-gray-600" : ""} ${selectedSeats.includes(seat.id) ? "bg-teal-500" : ""} ${selectedSeats.includes(seat.id) ? "text-black" : ""}`}
+            >
+              {seat.seatNumber}
+            </div>
+          ))}
+        </div>
+
+        {/* RIGHT MATRIX */}
+        <div className="grid grid-cols-6 gap-1">
+          {rightMatrix.map((seat) => (
+            <div
+              key={seat.seatNumber}
+              onClick={() => addOrRemoveSeat(seat.id)}
+              className={`m-2 p-2 font-bold flex items-center justify-center text-xs border rounded cursor-pointer ${(!selectedSeats.includes(seat.id)) ? "hover:bg-gray-600" : ""} ${selectedSeats.includes(seat.id) ? "bg-teal-500" : ""} ${selectedSeats.includes(seat.id) ? "text-black" : ""}`}
+            >
+              {seat.seatNumber}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* MIDDLE MATRIX */}
+      <div className="h-2/5 w-full flex justify-center mt-6">
+        <div className="grid grid-cols-12 grid-rows-2 gap-1">
+          {bottomMatrix.map((seat) => (
+            <div
+              key={seat.seatNumber}
+              onClick={() => addOrRemoveSeat(seat.id)}
+              className={`m-2 p-2 flex items-center justify-center text-xs border rounded cursor-pointer ${(!selectedSeats.includes(seat.id)) ? "hover:bg-gray-600" : ""} ${selectedSeats.includes(seat.id) ? "bg-teal-500" : ""} ${selectedSeats.includes(seat.id) ? "text-black" : ""}`}
+            >
+              {seat.seatNumber}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default BookTicket

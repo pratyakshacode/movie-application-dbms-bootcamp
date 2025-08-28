@@ -32,7 +32,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
     await User.save(user);
 
-    return res.status(201).json({ message: "User registered successfully" });
+    return res.status(201).json({ message: "User registered successfully", id: user.id });
   } catch (error) {
     console.error("Error registering user:", error);
     return res.status(500).json({ message: "Server error" });
@@ -68,7 +68,7 @@ export const loginUser = async (req: Request, res: Response) => {
       { expiresIn: "1d" }
     );
 
-    return res.status(200).json({ message: "Login successful", token });
+    return res.status(200).json({ message: "Login successful", token, id: user.id });
   } catch (error) {
     console.error("Error logging in:", error);
     return res.status(500).json({ message: "Server error" });
