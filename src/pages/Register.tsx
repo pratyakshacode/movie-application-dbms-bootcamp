@@ -19,6 +19,8 @@ const Register = () => {
     try {
       const service = new Service();
       const res = await service.post("auth/register", form);
+      const { data } = res;
+      localStorage.setItem("wowuser", JSON.stringify({ id: data.id, email: data.email, role: data.role, token: data.token }))
       if(res?.message === "User registered successfully") {
         navigate("/");
       } else {

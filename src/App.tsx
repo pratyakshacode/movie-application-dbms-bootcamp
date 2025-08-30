@@ -12,6 +12,7 @@ import AddShows from './pages/AddShows';
 import MovieDetail from './pages/MovieDetail';
 import BookTicket from './pages/BookTicket';
 import PaymentSuccess from './pages/PaymentSuccess';
+import MyBookings from './pages/MyBookings';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
               <Route path='/admin' element={<AdminOptions/>} />
               <Route path='/admin/addShows' element={<AddShows/>} />
               <Route path='/success' element={<PaymentSuccess/>} />
+              <Route path='/myBookings' element={<MyBookings/>} />
             </Routes>
           </div>
         </UserProvider>

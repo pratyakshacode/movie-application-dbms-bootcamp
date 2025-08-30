@@ -22,7 +22,7 @@ const Login = () => {
       const data = await service.post("auth/login", form);
 
       if (data?.token) {
-        const userData = { id: data.id, name: data.name || "", email: form.email, token: data.token };
+        const userData = { id: data.id, name: data.name || "", email: form.email, token: data.token, role: data.role };
         localStorage.setItem("wowuser", JSON.stringify(userData));
         setUser(userData);
         navigate("/");

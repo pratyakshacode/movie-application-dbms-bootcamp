@@ -19,7 +19,7 @@ export class Booking extends BaseEntity {
     bookingTime: Date;
 
     @Column()
-    status: string; // confirmed, cancelled, pending
+    status: string;
 
     @OneToMany(() => BookingSeat, (bookingSeat) => bookingSeat.booking)
     bookingSeats: BookingSeat[];
