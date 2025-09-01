@@ -41,7 +41,8 @@ export const createBookingWithPaymentSession = async (req: Request, res: Respons
 
 
         if (seats.length !== seatsIds.length) {
-            qr.rollbackTransaction();
+            await qr.rollbackTransaction();
+            await qr.release();
             return res.status(400).json({ status: "BAD_REQUEST", message: "Some seats not found or already locked." });
         }
 
@@ -57,7 +58,8 @@ export const createBookingWithPaymentSession = async (req: Request, res: Respons
 
 
         if(existingBooking.length > 0) {
-            qr.rollbackTransaction();
+            await qr.rollbackTransaction();
+            await qr.release();
             return res.status(400).json({ status: "BAD_REQUEST", message: "Some seats are already booked!" });
         }
 
@@ -117,7 +119,11 @@ export const createBookingWithPaymentSession = async (req: Request, res: Respons
         console.error("Error in createBookingWithPaymentSession", error.message);
         return res.status(500).json({ status: "INTERNAL_SERVER_ERROR", error: error.message });
     } finally {
-        await qr.release();
+        try {
+            await qr.release();
+        } catch (error) {
+            
+        }
     }
 };
 

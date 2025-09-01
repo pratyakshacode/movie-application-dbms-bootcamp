@@ -45,7 +45,8 @@ const createBookingWithPaymentSession = (req, res) => __awaiter(void 0, void 0, 
             lock: { mode: "pessimistic_write" }
         });
         if (seats.length !== seatsIds.length) {
-            qr.rollbackTransaction();
+            yield qr.rollbackTransaction();
+            yield qr.release();
             return res.status(400).json({ status: "BAD_REQUEST", message: "Some seats not found or already locked." });
         }
         const existingBooking = yield qr.manager.find(BookingSeat_1.BookingSeat, {
@@ -58,7 +59,8 @@ const createBookingWithPaymentSession = (req, res) => __awaiter(void 0, void 0, 
             }
         });
         if (existingBooking.length > 0) {
-            qr.rollbackTransaction();
+            yield qr.rollbackTransaction();
+            yield qr.release();
             return res.status(400).json({ status: "BAD_REQUEST", message: "Some seats are already booked!" });
         }
         const booking = qr.manager.create(Booking_1.Booking, {
@@ -108,7 +110,11 @@ const createBookingWithPaymentSession = (req, res) => __awaiter(void 0, void 0, 
         return res.status(500).json({ status: "INTERNAL_SERVER_ERROR", error: error.message });
     }
     finally {
-        yield qr.release();
+        try {
+            yield qr.release();
+        }
+        catch (error) {
+        }
     }
 });
 exports.createBookingWithPaymentSession = createBookingWithPaymentSession;
