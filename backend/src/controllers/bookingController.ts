@@ -14,7 +14,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 
 export const createBookingWithPaymentSession = async (req: Request, res: Response) => {
 
-    const { userId, showTimeId, seatsIds, amount } = req.body;
+    const { userId, showTimeId, seatsIds, amount, FRONTEND_URL } = req.body;
     const qr = AppDataSource.createQueryRunner();
 
     await qr.connect();
@@ -100,8 +100,8 @@ export const createBookingWithPaymentSession = async (req: Request, res: Respons
             quantity: seatsIds.length,
             },
         ],
-        success_url: `${process.env.FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.FRONTEND_URL}/cancel`,
+        success_url: `${FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${FRONTEND_URL}/cancel`,
         metadata: {
             bookingId: booking.id,
             paymentId: payment.id,

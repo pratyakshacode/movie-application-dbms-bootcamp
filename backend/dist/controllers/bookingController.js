@@ -25,7 +25,7 @@ const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY, {
     apiVersion: "2025-07-30.basil",
 });
 const createBookingWithPaymentSession = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId, showTimeId, seatsIds, amount } = req.body;
+    const { userId, showTimeId, seatsIds, amount, FRONTEND_URL } = req.body;
     const qr = dbConnect_1.AppDataSource.createQueryRunner();
     yield qr.connect();
     yield qr.startTransaction();
@@ -92,8 +92,8 @@ const createBookingWithPaymentSession = (req, res) => __awaiter(void 0, void 0, 
                     quantity: seatsIds.length,
                 },
             ],
-            success_url: `${process.env.FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.FRONTEND_URL}/cancel`,
+            success_url: `${FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${FRONTEND_URL}/cancel`,
             metadata: {
                 bookingId: booking.id,
                 paymentId: payment.id,

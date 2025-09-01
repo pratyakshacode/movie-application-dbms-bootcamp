@@ -21,7 +21,7 @@ const BookTicketButton = ({ showTimeId, seatsIds, amount } : BookTicketButtonPro
     }, [])
 
     const createStripeSession = async () => {
-        return await service.post('bookings/create-session', { userId, showTimeId, seatsIds, amount });
+        return await service.post('bookings/create-session', { userId, showTimeId, seatsIds, amount, FRONTEND_URL: service.getBaseURL() });
     }
     const { mutate, isPending } = useMutation({
         mutationFn: createStripeSession,
