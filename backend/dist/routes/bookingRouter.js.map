@@ -1,0 +1,1 @@
+{"version":3,"file":"bookingRouter.js","sourceRoot":"","sources":["../../src/routes/bookingRouter.ts"],"names":[],"mappings":";;AAAA,qCAAiC;AACjC,wEAAkG;AAElG,MAAM,aAAa,GAAG,IAAA,gBAAM,GAAE,CAAC;AAE/B,aAAa,CAAC,GAAG,CAAC,qBAAqB,EAAE,iCAAa,CAAC,CAAC;AACxD,aAAa,CAAC,IAAI,CAAC,iBAAiB,EAAE,mDAA+B,CAAC,CAAC;AAEvE,kBAAe,aAAa,CAAC"}

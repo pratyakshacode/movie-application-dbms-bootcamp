@@ -38,7 +38,7 @@ const BookTicketButton = ({ showTimeId, seatsIds, amount } : BookTicketButtonPro
     return (
         <button
             disabled={!showTimeId}
-        className={`px-10 py-2 ${!showTimeId ? "bg-gray-500" : "bg-teal-600"} text-white rounded-xl h-[40px] w-[200px]`} onClick={() => mutate()}>
+            className={`px-10 py-2 ${!showTimeId ? "bg-gray-500" : "bg-teal-600"} text-white rounded-xl h-[40px] w-[200px]`} onClick={() => mutate()}>
             { isPending ? <Spinner size={20} color='white' /> : "Book Ticket"}
         </button>
     )
