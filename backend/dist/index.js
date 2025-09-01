@@ -18,7 +18,7 @@ const path_1 = __importDefault(require("path"));
 const app = (0, express_1.default)();
 dotenv_1.default.config();
 app.use((0, cors_1.default)({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", 'https://wowshow.onrender.com'],
     credentials: true
 }));
 app.use(express_1.default.json());
