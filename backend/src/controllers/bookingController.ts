@@ -42,7 +42,6 @@ export const createBookingWithPaymentSession = async (req: Request, res: Respons
 
         if (seats.length !== seatsIds.length) {
             await qr.rollbackTransaction();
-            await qr.release();
             return res.status(400).json({ status: "BAD_REQUEST", message: "Some seats not found or already locked." });
         }
 
@@ -59,7 +58,6 @@ export const createBookingWithPaymentSession = async (req: Request, res: Respons
 
         if(existingBooking.length > 0) {
             await qr.rollbackTransaction();
-            await qr.release();
             return res.status(400).json({ status: "BAD_REQUEST", message: "Some seats are already booked!" });
         }
 
