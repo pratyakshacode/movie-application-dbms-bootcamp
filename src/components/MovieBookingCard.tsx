@@ -1,6 +1,6 @@
 const MovieBookingCard = (props: any) => {
   return (
-    <div className='h-[25rem] w-[19rem] border border-gray-500 rounded-2xl flex flex-col items-center text-white p-3'>
+    <div className='h-[30rem] w-[19rem] border border-gray-500 rounded-2xl flex flex-col items-center text-white p-3'>
         <div className='image-container h-[200px] w-[200px] rounded-full'>
             <img src={props.imageUrl} className='h-full w-full rounded-full'/>
         </div>
