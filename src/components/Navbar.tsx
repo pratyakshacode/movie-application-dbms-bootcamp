@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import { useUser } from "../context/UserContext";
-import { getRole } from "../utils/functions";
+import { getRole, getToken } from "../utils/functions";
 
 const Navbar = () => {
   const { user, logout } = useUser();
   const role = getRole();
+  const token = getToken();
 
   return (
     <nav className="fixed top-0 left-0 w-full shadow-md z-50 px-6 py-4 flex justify-between items-center">
@@ -13,7 +14,7 @@ const Navbar = () => {
       <ul className="flex space-x-6">
         <li><Link to="/">Home</Link></li>
         <li><Link to="/movies">Movies</Link></li>
-        <li><Link to={'/myBookings'}>My Bookings</Link></li>
+        {token && <li><Link to={'/myBookings'}>My Bookings</Link></li>}
         {role === 'admin' && <li><Link to={'/admin'}>Admin</Link></li>}
       </ul>
      <div className="space-x-4">

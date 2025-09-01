@@ -4,7 +4,7 @@ import { addTheatre, getAllSeatsOfTheatre, getAllTheatres } from '../controllers
 const theatreRouter = Router();
 
 theatreRouter.get('/all', getAllTheatres);
-theatreRouter.get('/seats/:theatreId', getAllSeatsOfTheatre);
+theatreRouter.get('/seats/:theatreId/:showTimeId', getAllSeatsOfTheatre);
 theatreRouter.post('/add', addTheatre)
 
 

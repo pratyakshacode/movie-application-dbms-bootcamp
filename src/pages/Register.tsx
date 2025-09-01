@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Service from "../utils/http";
+import { useUser } from "../context/UserContext";
 
 const Register = () => {
   const navigate = useNavigate();
+  const context = useUser();
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -21,6 +24,8 @@ const Register = () => {
       const res = await service.post("auth/register", form);
       const { data } = res;
       localStorage.setItem("wowuser", JSON.stringify({ id: data.id, email: data.email, role: data.role, token: data.token }))
+      const userData = { id: data.id, name: data.name || "", email: form.email, token: data.token, role: data.role };
+      context.setUser(userData);
       if(res?.message === "User registered successfully") {
         navigate("/");
       } else {

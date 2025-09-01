@@ -15,7 +15,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 export const createBookingWithPaymentSession = async (req: Request, res: Response) => {
 
     const { userId, showTimeId, seatsIds, amount } = req.body;
-
     const qr = AppDataSource.createQueryRunner();
 
     await qr.connect();
@@ -40,8 +39,26 @@ export const createBookingWithPaymentSession = async (req: Request, res: Respons
             lock: { mode: "pessimistic_write" }
         });
 
+
         if (seats.length !== seatsIds.length) {
+            qr.rollbackTransaction();
             return res.status(400).json({ status: "BAD_REQUEST", message: "Some seats not found or already locked." });
+        }
+
+        const existingBooking = await qr.manager.find(BookingSeat, {
+            where: {
+                seat: { id: In(seatsIds) },
+                booking: {
+                    showTime: { id: showTimeId },
+                    status: In(['BOOKED', 'PENDING'])
+                }
+            }
+        });
+
+
+        if(existingBooking.length > 0) {
+            qr.rollbackTransaction();
+            return res.status(400).json({ status: "BAD_REQUEST", message: "Some seats are already booked!" });
         }
 
         const booking = qr.manager.create(Booking, {
@@ -110,7 +127,7 @@ export const getMyBookings = async (req: Request, res: Response) => {
         const { userId } = req.params;
         const query: FindManyOptions<Booking> = {
             where: { user: { id: userId }, payment: { status: PaymentStatus.SUCCESS } },
-            relations: ['showTime', 'bookingSeats', 'payment', 'showTime.movie', "bookingSeats.seat"],
+            relations: ['showTime', 'bookingSeats', 'payment', 'showTime.movie', "bookingSeats.seat", 'showTime.theatre'],
             select: {
                 id: true,
                 showTime: {
@@ -121,11 +138,15 @@ export const getMyBookings = async (req: Request, res: Response) => {
                         id: true,
                         title: true,
                         image_url: true
+                    },
+                    theatre: {
+                        id: true,
+                        name: true
                     }
                 },
                 status: true,
                 bookingSeats: { id: true, seat: { seatNumber: true, seatType: true, theatre: true } },
-                payment: { id: true, status: true, amount: true }
+                payment: { id: true, status: true, amount: true },
             }
         };
         
@@ -142,6 +163,7 @@ export const getMyBookings = async (req: Request, res: Response) => {
             bookingData['imageUrl'] = booking.showTime.movie.image_url;
             bookingData['seats'] = booking.bookingSeats;
             bookingData['payment'] = booking.payment;
+            bookingData['theatre'] = booking.showTime.theatre.name;
 
             data.push(bookingData);
 

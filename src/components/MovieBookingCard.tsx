@@ -1,5 +1,3 @@
-import React from 'react'
-
 const MovieBookingCard = (props: any) => {
   return (
     <div className='h-[25rem] w-[19rem] border border-gray-500 rounded-2xl flex flex-col items-center text-white p-3'>
@@ -13,6 +11,7 @@ const MovieBookingCard = (props: any) => {
             <span>Date: {new Date(props.startTime).toLocaleDateString()}</span>
             <span>From : {new Date(props.startTime).toLocaleTimeString()}</span>
             <span>To : {new Date(props.endTime).toLocaleTimeString()}</span>
+            <span>Theatre: {props.theatre}</span>
         </div>
     </div>
   )

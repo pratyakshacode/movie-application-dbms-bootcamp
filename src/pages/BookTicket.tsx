@@ -29,12 +29,12 @@ const BookTicket = () => {
   }
 
   const getSeatsOfTheatre = async () => {
-    return await service.get(`theatre/seats/${theatreId}`);
+    return await service.get(`theatre/seats/${theatreId}/${selectedShow}`);
   }
 
   const { data: seats } = useQuery({
     queryFn: getSeatsOfTheatre,
-    queryKey: ['getSeatsOfTheatre', theatreId],
+    queryKey: ['getSeatsOfTheatre', theatreId, selectedShow],
     enabled: theatreId.length > 0
   })
 
@@ -50,7 +50,8 @@ const BookTicket = () => {
 
   const { data: shows } = useQuery({
     queryKey: ['showsForMovie'],
-    queryFn: getShowsForMovie
+    queryFn: getShowsForMovie,
+    refetchOnWindowFocus: false
   })
 
   useEffect(() => {
@@ -80,7 +81,7 @@ const BookTicket = () => {
           }
       </div>
       <div>
-          <BookTicketButton showTimeId={selectedShow} amount={amount * selectedSeats.length} seatsIds={selectedSeats} />
+          <BookTicketButton showTimeId={selectedShow} amount={amount} seatsIds={selectedSeats} />
       </div>
     </div>
   )
@@ -90,6 +91,7 @@ interface Seat {
   id: string;
   seatNumber: string;
   seatType: "LeftView" | "RightView" | "MiddleView";
+  isBooked: boolean
 }
 
 interface SeatLayoutProps {
@@ -115,13 +117,14 @@ const SeatLayout = ({ seats, addOrRemoveSeat, selectedSeats }: SeatLayoutProps) 
         {/* LEFT MATRIX */}
         <div className="grid grid-cols-6 gap-1">
           {leftMatrix.map((seat) => (
-            <div
+            <button
               key={seat.seatNumber}
+              disabled={seat.isBooked}
               onClick={() => addOrRemoveSeat(seat.id)}
-              className={`m-2 p-2 flex items-center justify-center text-xs border rounded cursor-pointer ${(!selectedSeats.includes(seat.id)) ? "hover:bg-gray-600" : ""} ${selectedSeats.includes(seat.id) ? "bg-teal-500" : ""} ${selectedSeats.includes(seat.id) ? "text-black" : ""}`}
+              className={`m-2 p-2 flex items-center justify-center text-xs border rounded cursor-pointer ${((!selectedSeats.includes(seat.id) && !seat.isBooked)) ? "hover:bg-gray-600" : ""} ${seat.isBooked ? "bg-teal-900" : (selectedSeats.includes(seat.id)) ? "bg-teal-500" : ""} ${(selectedSeats.includes(seat.id)) ? "text-black" : ""}`}
             >
               {seat.seatNumber}
-            </div>
+            </button>
           ))}
         </div>
 

@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react"
 import Service from "../utils/http";
+import Spinner from "../components/Spinner";
 
 const AddTheatre = () => {
 
@@ -27,7 +28,7 @@ const AddTheatre = () => {
         return await service.post('theatre/add', { theatreName, location });
     }
 
-    const { mutate } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: addTheatre,
         onSuccess(json) {
             setTheatreName('');
@@ -59,7 +60,11 @@ const AddTheatre = () => {
                 onChange={(e) => setLocation(e.target.value)}
                 value={location}
             />
-            <button className="px-6 py-1 border my-4 rounded-xl hover:bg-gray-700">Add Theatre</button>
+            <button className="px-6 py-1 border my-4 rounded-xl hover:bg-gray-700 w-[300px] h-[40px] flex justify-center items-center">
+                {
+                    isPending ? <Spinner size={20}  color="teal"/> : "Add Theatre"
+                }
+            </button>
         </div>
         </form>
     </div>

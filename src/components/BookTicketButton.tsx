@@ -1,5 +1,7 @@
+import { useMutation } from '@tanstack/react-query';
 import Service from '../utils/http'
 import { useEffect, useState } from 'react';
+import Spinner from './Spinner';
 
 interface BookTicketButtonProps {
     showTimeId: string,
@@ -18,15 +20,27 @@ const BookTicketButton = ({ showTimeId, seatsIds, amount } : BookTicketButtonPro
         setUserId(user.id);
     }, [])
 
-    const handleClick = async () => {
-        const response = await service.post('bookings/create-session', { userId, showTimeId, seatsIds, amount });
-        window.location.href = response.data.checkoutUrl;
+    const createStripeSession = async () => {
+        return await service.post('bookings/create-session', { userId, showTimeId, seatsIds, amount });
     }
+    const { mutate, isPending } = useMutation({
+        mutationFn: createStripeSession,
+        mutationKey: ['createStripeSession'],
+        onSuccess(response) {
+              window.location.href = response.data.checkoutUrl;
+        },
+        onError(error: any) {
+            alert(error?.response?.data?.message ?? "Seat Already Booked or is in progress of booking." );
+        }
+    })
+
 
     return (
         <button
-            
-        className='px-10 py-2 bg-purple-500 text-white rounded-xl' onClick={handleClick}>Book Tickets</button>
+            disabled={!showTimeId}
+        className={`px-10 py-2 ${!showTimeId ? "bg-gray-500" : "bg-teal-600"} text-white rounded-xl h-[40px] w-[200px]`} onClick={() => mutate()}>
+            { isPending ? <Spinner size={20} color='white' /> : "Book Ticket"}
+        </button>
     )
 }
 

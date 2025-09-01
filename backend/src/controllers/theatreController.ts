@@ -6,6 +6,7 @@ import { Seat } from "../entities/Seat";
 import { defaultSeatMap } from "../utils/utils";
 import { AppDataSource } from "../config/dbConnect";
 import { FindManyOptions } from "typeorm";
+import { BookingSeat } from "../entities/BookingSeat";
 
 export const addTheatre = async (req: Request, res: Response) => {
 
@@ -62,20 +63,36 @@ export const getAllTheatres = async (req: Request, res: Response) => {
 
 export const getAllSeatsOfTheatre = async (req: Request, res: Response) => {
   try {
+    const { theatreId, showTimeId } = req.params; // use showTimeId instead of showId
 
-    const { theatreId } = req.params;
+    const allSeats = await Seat.find({
+      where: { theatre: { id: theatreId } },
+    });
 
-    const query: FindManyOptions<Seat> = {
+    const bookedSeats = await BookingSeat.find({
       where: {
-        theatre: { id: theatreId }
-      }
-    }
+        booking: {
+          showTime: { id: showTimeId },
+          status: "BOOKED", // make sure Booking has a status column
+        },
+      },
+      relations: ["seat"],
+    });
 
-    const allSeatsOfTheatre = await Seat.find(query);
-    return res.status(200).json({ status: "SUCCESS", message: "Theatre seats fetched!", data:  allSeatsOfTheatre });
+    const bookedSeatIds = bookedSeats.map((bs) => bs.seat.id);
 
+    const seatsWithStatus = allSeats.map((seat) => ({
+      ...seat,
+      isBooked: bookedSeatIds.includes(seat.id),
+    }));
+
+    return res.status(200).json({
+      status: "SUCCESS",
+      message: "Seats with booking status fetched!",
+      data: seatsWithStatus,
+    });
   } catch (error) {
-      console.error("Error in getAllSeatsOfTheatre", error);
-      return res.status(500).json({ status: "INTERNAL_SERVER_ERROR", error: error.message });
+    console.error("Error in getAllSeatsOfTheatre", error);
+    return res.status(500).json({ status: "INTERNAL_SERVER_ERROR", error: error.message });
   }
-}
+};

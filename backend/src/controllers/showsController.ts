@@ -11,8 +11,8 @@ export const addShow = async (req: Request, res: Response) => {
 
         const query: FindOneOptions<ShowTime> = {
             where: {
-                startTime: MoreThanOrEqual(startDate),
-                endTime: LessThanOrEqual(endDate),
+                startTime: LessThanOrEqual(endDate),
+                endTime: MoreThanOrEqual(startDate),
                 movie: { id: movie },
                 theatre: { id: theatre }
             }
