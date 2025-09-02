@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 import Modal from "../components/Modal";
+import { getUserId } from "../utils/functions";
 
 const Star = ({ filled, onClick, onMouseEnter, onMouseLeave } : { filled: boolean, onClick?: () => void, onMouseEnter?: () => void, onMouseLeave?: () => void }) => {
   return (
@@ -20,13 +21,8 @@ const MovieDetail = () => {
   const [rating, setRating] = useState(0);
   const [hovered, setHovered] = useState(0);
   const [comment, setComment] = useState('');
-  const [userId, setUserId] = useState('')
+  const userId = getUserId();
       
-  
-  useEffect(() => {
-      const user = JSON.parse(localStorage.getItem('wowuser') ?? "{}");
-      setUserId(user.id);
-  }, [])
 
   const getMovieDetails = async () => {
     return await service.get(`movies/${movieId}`);

@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import Service from "../utils/http";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const redirectPath = searchParams.get('next') || '/';
+
   const { setUser } = useUser();
   const [form, setForm] = useState({
     email: "",
@@ -19,13 +23,13 @@ const Login = () => {
     e.preventDefault();
     try {
       const service = new Service();
-      const data = await service.post("auth/login", form);
-
+      const response = await service.post("auth/login", form);
+      const { data } = response;
       if (data?.token) {
-        const userData = { id: data.id, name: data.name || "", email: form.email, token: data.token, role: data.role };
+        const userData = { token: data.token };
         localStorage.setItem("wowuser", JSON.stringify(userData));
         setUser(userData);
-        navigate("/");
+        navigate(redirectPath, { replace: true });
       } else {
         alert("Invalid credentials");
       }
@@ -34,6 +38,7 @@ const Login = () => {
       alert(err?.response?.data?.message || "Server error");
     }
   };
+
 
   return (
     <div className="flex justify-center items-center min-h-[calc(100vh-64px)] bg-gray-900 text-white">

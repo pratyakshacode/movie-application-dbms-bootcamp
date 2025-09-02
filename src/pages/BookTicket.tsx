@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import Service from "../utils/http";
 import BookTicketButton from "../components/BookTicketButton";
+import { getToken } from "../utils/functions";
 
 const BookTicket = () => {
 
@@ -13,6 +14,7 @@ const BookTicket = () => {
   const [theatreId, setTheatreId] = useState('');
   const [defaultSeatMap, setDefaultSeatMap] = useState([])
   const [amount, setAmount] = useState(0);
+  const [token, setToken] = getToken();
   
   const getMovieById = async () => {
       return await service.get(`movies/${movieId}`);
@@ -58,6 +60,9 @@ const BookTicket = () => {
       setDefaultSeatMap(seats?.data ?? []);
   }, [seats])
 
+  if(!token) {
+      return <Navigate to={'/login'}/>
+  }
   return (
     <div className="flex flex-col justify-center items-center text-gray-400">
       <h1 className="text-center text-3xl my-2 text-white underline underline-offset-8 ">Book Tickets For <span className="text-teal-500">{movie?.data?.title}</span></h1>
@@ -131,13 +136,14 @@ const SeatLayout = ({ seats, addOrRemoveSeat, selectedSeats }: SeatLayoutProps) 
         {/* RIGHT MATRIX */}
         <div className="grid grid-cols-6 gap-1">
           {rightMatrix.map((seat) => (
-            <div
+            <button
               key={seat.seatNumber}
+              disabled={seat.isBooked}
               onClick={() => addOrRemoveSeat(seat.id)}
-              className={`m-2 p-2 font-bold flex items-center justify-center text-xs border rounded cursor-pointer ${(!selectedSeats.includes(seat.id)) ? "hover:bg-gray-600" : ""} ${selectedSeats.includes(seat.id) ? "bg-teal-500" : ""} ${selectedSeats.includes(seat.id) ? "text-black" : ""}`}
+              className={`m-2 p-2 flex items-center justify-center text-xs border rounded cursor-pointer ${((!selectedSeats.includes(seat.id) && !seat.isBooked)) ? "hover:bg-gray-600" : ""} ${seat.isBooked ? "bg-teal-900" : (selectedSeats.includes(seat.id)) ? "bg-teal-500" : ""} ${(selectedSeats.includes(seat.id)) ? "text-black" : ""}`}
             >
               {seat.seatNumber}
-            </div>
+            </button>
           ))}
         </div>
       </div>
@@ -146,13 +152,14 @@ const SeatLayout = ({ seats, addOrRemoveSeat, selectedSeats }: SeatLayoutProps) 
       <div className="h-2/5 w-full flex justify-center mt-6">
         <div className="grid grid-cols-12 grid-rows-2 gap-1">
           {bottomMatrix.map((seat) => (
-            <div
+            <button
               key={seat.seatNumber}
+              disabled={seat.isBooked}
               onClick={() => addOrRemoveSeat(seat.id)}
-              className={`m-2 p-2 flex items-center justify-center text-xs border rounded cursor-pointer ${(!selectedSeats.includes(seat.id)) ? "hover:bg-gray-600" : ""} ${selectedSeats.includes(seat.id) ? "bg-teal-500" : ""} ${selectedSeats.includes(seat.id) ? "text-black" : ""}`}
+              className={`m-2 p-2 flex items-center justify-center text-xs border rounded cursor-pointer ${((!selectedSeats.includes(seat.id) && !seat.isBooked)) ? "hover:bg-gray-600" : ""} ${seat.isBooked ? "bg-teal-900" : (selectedSeats.includes(seat.id)) ? "bg-teal-500" : ""} ${(selectedSeats.includes(seat.id)) ? "text-black" : ""}`}
             >
               {seat.seatNumber}
-            </div>
+            </button>
           ))}
         </div>
       </div>

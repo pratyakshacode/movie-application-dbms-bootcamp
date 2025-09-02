@@ -1,7 +1,12 @@
+import { jwtDecode } from 'jwt-decode'
+
 export const getRole = () => {
     let userObj: any = localStorage.getItem("wowuser");
     userObj = JSON.parse(userObj!);
-    return userObj?.role ?? "";
+    
+    let decoded: any = {};
+    if(userObj?.token) decoded = jwtDecode(userObj?.token)
+    return decoded?.role ?? "";
 }
 
 export const getToken = () => {
@@ -13,5 +18,7 @@ export const getToken = () => {
 export const getUserId = () => {
     let userObj: any = localStorage.getItem("wowuser");
     userObj = JSON.parse(userObj!);
-    return userObj?.i ?? "";
+    let decoded: any = {};
+    if(userObj?.token) decoded = jwtDecode(userObj?.token)
+    return decoded?.id ?? "";
 }

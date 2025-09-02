@@ -1,10 +1,8 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface User {
-  id: string;
-  name: string;
-  email: string;
   token: string;
 }
 
@@ -18,6 +16,7 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUserState] = useState<User | null>(null);
+  const navigate = useNavigate();
 
   // Load user from localStorage on app start
   useEffect(() => {
@@ -36,6 +35,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
     localStorage.removeItem("wowuser"); // user info
     localStorage.removeItem("token");   // JWT token
+    navigate('/login');
   };
 
   return (

@@ -13,6 +13,8 @@ import MovieDetail from './pages/MovieDetail';
 import BookTicket from './pages/BookTicket';
 import PaymentSuccess from './pages/PaymentSuccess';
 import MyBookings from './pages/MyBookings';
+import PrivateRoute from './components/PrivateRoute';
+import AdminRoute from './components/AdminRoute';
 
 function App() {
   return (
@@ -26,13 +28,17 @@ function App() {
               <Route path='/login' element={<Login />} />
               <Route path='/' element={<Home />} />
               <Route path='/movies' element={<Movies />} />
-              <Route path='/bookTicket/:movieId' element={<BookTicket/>} />
               <Route path='/movies/:movieId' element={<MovieDetail/>} />
-              <Route path='/admin/addTheatre' element={<AddTheatre/>} />
-              <Route path='/admin' element={<AdminOptions/>} />
-              <Route path='/admin/addShows' element={<AddShows/>} />
+              <Route element={<AdminRoute/>}>
+                  <Route path='/admin/addTheatre' element={<AddTheatre/>} />
+                  <Route path='/admin' element={<AdminOptions/>} />
+                  <Route path='/admin/addShows' element={<AddShows/>} />
+              </Route>
               <Route path='/success' element={<PaymentSuccess/>} />
-              <Route path='/myBookings' element={<MyBookings/>} />
+              <Route element={<PrivateRoute/>}>
+                <Route path='/bookTicket/:movieId' element={<BookTicket/>} />
+                <Route path='/myBookings' element={<MyBookings/>} />
+              </Route>
             </Routes>
           </div>
         </UserProvider>

@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import Service from '../utils/http'
 import { useEffect, useState } from 'react';
 import Spinner from './Spinner';
+import { getUserId } from '../utils/functions';
 
 interface BookTicketButtonProps {
     showTimeId: string,
@@ -12,13 +13,7 @@ interface BookTicketButtonProps {
 const BookTicketButton = ({ showTimeId, seatsIds, amount } : BookTicketButtonProps) => {
 
     const service = new Service();
-    const [userId, setUserId] = useState('')
-    
-
-    useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('wowuser') ?? "{}");
-        setUserId(user.id);
-    }, [])
+    const userId = getUserId();
 
     const createStripeSession = async () => {
         return await service.post('bookings/create-session', { userId, showTimeId, seatsIds, amount, FRONTEND_URL: service.getBaseURL() });
@@ -37,8 +32,8 @@ const BookTicketButton = ({ showTimeId, seatsIds, amount } : BookTicketButtonPro
 
     return (
         <button
-            disabled={!showTimeId}
-            className={`px-10 py-2 ${!showTimeId ? "bg-gray-500" : "bg-teal-600"} text-white rounded-xl h-[40px] w-[200px]`} onClick={() => mutate()}>
+            disabled={!showTimeId || seatsIds.length === 0}
+            className={`px-10 py-2 ${!showTimeId || seatsIds.length === 0 ? "bg-gray-500" : "bg-teal-600"} text-white rounded-xl h-[40px] w-[200px] flex justify-center`} onClick={() => mutate()}>
             { isPending ? <Spinner size={20} color='white' /> : "Book Ticket"}
         </button>
     )

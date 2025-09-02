@@ -1,17 +1,18 @@
 import { useQuery } from "@tanstack/react-query"
-import { useEffect, useState } from "react"
 import Service from "../utils/http";
 import MovieBookingCard from "../components/MovieBookingCard";
+import { getToken, getUserId } from "../utils/functions";
+import NotFound from "./NotFound";
 
 const MyBookings = () => {
 
-    const [userId, setUserId] = useState('');
-    const service = new Service();
+    const userId = getUserId();
+    const token = getToken()
 
-    useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('wowuser') ?? "{}");
-        setUserId(user.id);
-    }, []);
+    if(!token) {
+        return <NotFound/>
+    }
+    const service = new Service();
 
     const getAllMyBookings = async () => {
         return await service.get(`bookings/myBookings/${userId}`);
