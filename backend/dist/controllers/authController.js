@@ -36,8 +36,8 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             password: hashedPassword
         });
         yield User_1.User.save(user);
-        const token = jsonwebtoken_1.default.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET || "defaultsecret", { expiresIn: "1d" });
-        return res.status(201).json({ message: "User registered successfully", data: { id: user.id, name: user.name, role: user.role, email: user.email, token } });
+        const token = jsonwebtoken_1.default.sign({ id: user.id, name: user.name, email: user.email, role: user.role }, process.env.JWT_SECRET || "defaultsecret", { expiresIn: "1d" });
+        return res.status(201).json({ message: "User registered successfully", data: { token } });
     }
     catch (error) {
         console.error("Error registering user:", error);
@@ -63,8 +63,8 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return res.status(401).json({ message: "Invalid credentials" });
         }
         // Create JWT
-        const token = jsonwebtoken_1.default.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET || "defaultsecret", { expiresIn: "1d" });
-        return res.status(200).json({ message: "Login successful", token, id: user.id, name: user.name, email: user.email, role: user.role });
+        const token = jsonwebtoken_1.default.sign({ id: user.id, name: user.name, email: user.email, role: user.role }, process.env.JWT_SECRET || "defaultsecret", { expiresIn: "1d" });
+        return res.status(200).json({ message: "Login successful", data: { token } });
     }
     catch (error) {
         console.error("Error logging in:", error);
