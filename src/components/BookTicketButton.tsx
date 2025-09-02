@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
 import Service from '../utils/http'
-import { useEffect, useState } from 'react';
 import Spinner from './Spinner';
 import { getUserId } from '../utils/functions';
 

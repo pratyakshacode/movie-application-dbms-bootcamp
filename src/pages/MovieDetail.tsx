@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom"
 import Service from "../utils/http";
 import Slider from "react-slick";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 import Modal from "../components/Modal";

@@ -14,7 +14,7 @@ const BookTicket = () => {
   const [theatreId, setTheatreId] = useState('');
   const [defaultSeatMap, setDefaultSeatMap] = useState([])
   const [amount, setAmount] = useState(0);
-  const [token, setToken] = getToken();
+  const [token] = getToken();
   
   const getMovieById = async () => {
       return await service.get(`movies/${movieId}`);
