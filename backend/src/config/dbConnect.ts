@@ -23,6 +23,7 @@ export const AppDataSource = new DataSource({
   logging: true,
   entities: [__dirname + "/../entities/**/*.js"],
 });
+
 export const connectDB = async () => {
   try {
     await Promise.all([
